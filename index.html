@@ -1,1 +1,202 @@
-hola
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>WMS Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+        integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+        integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+
+    <!-- Estilos del scrollbar -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/malihu/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css" />
+
+    <!-- jQuery desde CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <!-- Plugin mCustomScrollbar -->
+    <script
+        src="https://cdn.jsdelivr.net/gh/malihu/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+    <script src="dist/leaflet.wms.js"></script>
+    <!-- <script src="dist/require.js" data-main="app"></script> -->
+    <link rel="stylesheet" type="text/css" href="dist/leaflet.css">
+    <script src="dist/app.js"></script>
+    <script src="dist/app_fetch.js"></script>
+    <script src="dist/busquedacatastro.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #sidebar {
+            width: 320px;
+            background: #f9f9f9;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+            transition: transform 0.3s ease;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        #map {
+            flex: 1;
+            position: relative;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-section h3 {
+            margin-bottom: 12px;
+            color: #333;
+            font-size: 18px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            background-color: #4d84fa;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #1c62fa;
+        }
+
+        #toggleBtn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1001;
+            background: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #toggleBtn:hover {
+            background: #f0f0f0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            #sidebar {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                z-index: 1000;
+                transform: translateX(-100%);
+            }
+
+            #sidebar.open {
+                transform: translateX(0);
+            }
+
+            #map {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Botón para móviles -->
+    <button id="toggleBtn"><i class="bi bi-list"></i></button>
+
+    <!-- Panel lateral -->
+    <div id="sidebar">
+
+        <div class="sidebar-section">
+            <h3>Búsqueda por Número de Catastro </h3>
+            <input type="text" id="inputCatastro" placeholder="Ingrese número de catastro" />
+            <button onclick="buscarCatastro()">Buscar</button>
+        </div>
+        <!-- <div class="sidebar-section">
+            <h3>Búsqueda por Número de Cuenta</h3>
+            <input type="text" id="inputCuenta" placeholder="Ingrese número de cuenta" />
+            <button onclick="buscarPorCampo('cuenta')">Buscar</button>
+        </div> -->
+        <div class="sidebar-section" id="infoPanel">
+            <h3>Información del Catastro</h3>
+            <div id="catastroInfo" style="line-height: 1.6; color: #444;">
+                Realice una búsqueda para ver los datos
+            </div>
+        </div>
+    </div>
+
+    <!-- Mapa -->
+    <div id="map"></div>
+
+
+    <script>
+        const map = L.map('map').setView([-24.79303, -65.41527], 16);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        
+
+        // Toggle panel en móviles
+        document.getElementById("toggleBtn").addEventListener("click", () => {
+            document.getElementById("sidebar").classList.toggle("open");
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+        crossorigin="anonymous"></script>
+
+    </script>
+</body>
+
+</html>

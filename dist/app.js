@@ -1,5 +1,3 @@
-  
-
   // Opciones para la fuente WMS
   var options = {
     format: 'image/png',

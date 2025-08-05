@@ -69,7 +69,7 @@
 // getData();
 
 const api_url =
-  "https://geocloud.municipalidadsalta.gob.ar/geoserver/public/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=public:0y1_codigolink_masvalorsuelo_ut_v1&maxFeatures=50&outputFormat=application%2Fjson";
+  "https://geocloud.municipalidadsalta.gob.ar/geoserver/public/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=public:0y1_codigolink_masvalorsuelo_ut_v1&outputFormat=application%2Fjson";
 
 // Función principal
 async function getData() {
@@ -81,16 +81,29 @@ async function getData() {
       // Datos que querés mostrar en el popup
       const props = feature.properties;
 
-      const contenido = `
-        <div id='Estilo1'><h3><i>Valor del Suelo</i></h3></div>
-        <hr class='hrx' style='color: #ef7d26;' align='left' noshade='noshade' size='2' width='100%' />
-        <div id='Estilo3a'>
-          <b>Catastro:</b> ${props.catastro || '-'}<br>
-          <b>Tipo:</b> ${props.Tipo || '-'}<br>
-          <b>COD_LINK:</b> ${props.COD_LINK || '-'}<br>
-          <b>Distrito:</b> ${props.Distrito || '-'}<br>
-          <b>Valor rango:</b> ${props.Valor_Rang || '-'}<br>
-        </div>`;
+      // const contenido = `
+      //   <div id='Estilo1'><h3><i>Valor del Suelo</i></h3></div>
+      //   <hr class='hrx' style='color: #ef7d26;' align='left' noshade='noshade' size='2' width='100%' />
+      //   <div id='Estilo3a'>
+      //     <b>Catastro:</b> ${props.catastro || '-'}<br>
+      //     <b>Tipo:</b> ${props.Tipo || '-'}<br>
+      //     <b>COD_LINK:</b> ${props.COD_LINK || '-'}<br>
+      //     <b>Distrito:</b> ${props.Distrito || '-'}<br>
+      //     <b>Valor rango:</b> ${props.Valor_Rang || '-'}<br>
+      //   </div>`;
+
+      const codLinkDesglosado = descomponerCODLINK(props.COD_LINK || "");
+
+const contenido = `
+  <b>Catastro:</b> ${props.catastro || "-"}<br>
+  <b>Cuenta:</b> ${props.cuenta || "-"}<br>
+  <b>Tipo:</b> ${props.Tipo || "-"}<br>
+  <b>Distrito:</b> ${props.Distrito || "-"}<br>
+  <b>Valor suelo:</b> ${props.Valor_Rang || "-"}<br>
+  <b>Valor ponderado:</b> ${props.Valorponderado || "-"}<br><hr>
+  <b><u>Desglose COD_LINK:</u></b><br>
+  ${codLinkDesglosado}
+`;
 
       layer.bindPopup(contenido);
     },

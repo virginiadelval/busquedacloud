@@ -15,7 +15,7 @@
     const defaultParams = {
       request: 'GetFeatureInfo',
       service: 'WFS',
-      srs: 'EPSG:3857',
+      srs: 'EPSG:4326',
       styles: '',
       version: '1.1.1',
       format: 'image/png',
